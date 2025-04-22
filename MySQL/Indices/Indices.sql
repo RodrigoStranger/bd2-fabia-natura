@@ -1,3 +1,5 @@
+USE FabiaNatura;
+
 -- Índices para Personas
 CREATE INDEX idx_personas_nombre ON Personas(nombre);
 CREATE INDEX idx_personas_apellido_paterno ON Personas(apellido_paterno);

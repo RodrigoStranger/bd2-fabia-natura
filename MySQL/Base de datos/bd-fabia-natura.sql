@@ -3,7 +3,7 @@ USE FabiaNatura;
 
 -- Tabla de Personas
 CREATE TABLE IF NOT EXISTS Personas (
-    dni VARCHAR(8) NOT NULL PRIMARY KEY,
+    dni CHAR(8) NOT NULL PRIMARY KEY,
     nombre VARCHAR(20) NOT NULL,
     apellido_paterno VARCHAR(20) NOT NULL,
     apellido_materno VARCHAR(20) NOT NULL,
@@ -13,15 +13,15 @@ CREATE TABLE IF NOT EXISTS Personas (
 
 -- Teléfonos de Personas
 CREATE TABLE IF NOT EXISTS Telefonos_Personas (
-    telefono VARCHAR(9) NOT NULL PRIMARY KEY,
-    dni VARCHAR(8) NOT NULL,
+    telefono CHAR(9) NOT NULL PRIMARY KEY,
+    dni CHAR(8) NOT NULL,
     FOREIGN KEY (dni) REFERENCES Personas(dni) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Direcciones de Personas
 CREATE TABLE IF NOT EXISTS Direcciones_Personas (
     id_direccion INT AUTO_INCREMENT PRIMARY KEY,
-    dni VARCHAR(8) NOT NULL,
+    dni CHAR(8) NOT NULL,
     direccion VARCHAR(100),
     FOREIGN KEY (dni) REFERENCES Personas(dni) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS Direcciones_Personas (
 -- Empleados
 CREATE TABLE IF NOT EXISTS Empleados (
     cod_empleado INT AUTO_INCREMENT PRIMARY KEY,
-    dni VARCHAR(8) NOT NULL,
+    dni CHAR(8) NOT NULL,
     estado ENUM('activo', 'inactivo') NOT NULL DEFAULT 'activo',
     FOREIGN KEY (dni) REFERENCES Personas(dni) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS Asesores (
 
 -- Clientes
 CREATE TABLE IF NOT EXISTS Clientes (
-    dni VARCHAR(8) NOT NULL PRIMARY KEY,
+    dni CHAR(8) NOT NULL PRIMARY KEY,
     tipo_cliente ENUM('regular', 'frecuente') NOT NULL DEFAULT 'regular',
     FOREIGN KEY (dni) REFERENCES Personas(dni) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -72,15 +72,15 @@ CREATE TABLE IF NOT EXISTS Contratos (
 
 -- Proveedores
 CREATE TABLE IF NOT EXISTS Proveedores (
-    ruc VARCHAR(11) NOT NULL PRIMARY KEY,
+    ruc CHAR(11) NOT NULL PRIMARY KEY,
     nombre VARCHAR(50) UNIQUE NOT NULL,
     fecha_registro TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Teléfonos de Proveedores
 CREATE TABLE IF NOT EXISTS Telefonos_Proveedores (
-    ruc VARCHAR(11) NOT NULL,
-    telefono VARCHAR(15) NOT NULL PRIMARY KEY,
+    ruc CHAR(11) NOT NULL,
+    telefono CHAR(15) NOT NULL PRIMARY KEY,
     FOREIGN KEY (ruc) REFERENCES Proveedores(ruc) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS Categorias (
 CREATE TABLE IF NOT EXISTS Productos (
     cod_producto INT AUTO_INCREMENT PRIMARY KEY,
     cod_categoria INT,
-    ruc VARCHAR(11),
+    ruc CHAR(11),
     nombre VARCHAR(100) UNIQUE NOT NULL,
     linea VARCHAR(100),
     descripcion TEXT,
@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS Productos (
 -- Facturas
 CREATE TABLE IF NOT EXISTS Facturas (
     cod_factura INT AUTO_INCREMENT PRIMARY KEY,
-    dni VARCHAR(8) NOT NULL,
+    dni CHAR(8) NOT NULL,
     cod_vendedor INT NOT NULL,
     cod_asesor INT,
     fecha_registro TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

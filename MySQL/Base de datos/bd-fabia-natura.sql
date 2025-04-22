@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS Empleados (
     cod_empleado INT AUTO_INCREMENT PRIMARY KEY,
     dni CHAR(8) NOT NULL,
     estado ENUM('activo', 'inactivo') NOT NULL DEFAULT 'activo',
-    contraseña VARCHAR(20) NOT NULL,
+    contraseña VARCHAR(20),
     es_administrador BOOLEAN NOT NULL DEFAULT FALSE,
     FOREIGN KEY (dni) REFERENCES Personas(dni) ON DELETE CASCADE ON UPDATE CASCADE
 );

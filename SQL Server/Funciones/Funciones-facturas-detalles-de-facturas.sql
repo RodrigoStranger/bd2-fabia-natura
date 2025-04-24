@@ -1,6 +1,7 @@
 USE FabiaNatura;
 GO
 
+-- Obtener la ultima Factura
 CREATE FUNCTION Ventas.ObtenerUltimaFactura()
 RETURNS INT
 AS

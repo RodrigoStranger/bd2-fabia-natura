@@ -17,5 +17,5 @@ BEGIN
     RETURN @ultima_factura;
 END;
 
--- SELECT dbo.Ventas.ObtenerUltimaFactura() AS UltimaFactura;
+-- SELECT Ventas.ObtenerUltimaFactura() AS UltimaFactura;
 

@@ -142,7 +142,7 @@ CREATE TABLE RecursosHumanos.Contratos (
     salario_men FLOAT NOT NULL,
     observaciones TEXT,
     estado VARCHAR(10) CHECK (estado IN ('activo', 'inactivo')) NOT NULL DEFAULT 'activo',
-    FOREIGN KEY (cod_empleado) REFERENCES RecursosHumanos.Empleados(cod_empleado) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (cod_empleado) REFERENCES RecursosHumanos.Empleados(cod_empleado) ON UPDATE CASCADE
 ) ON [FG_RecursosHumanos];
 
 -- Crear tablas en el esquema Ventas

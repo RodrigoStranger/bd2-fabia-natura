@@ -18,4 +18,3 @@ BEGIN
 END;
 
 -- SELECT Ventas.ObtenerUltimaFactura() AS UltimaFactura;
-

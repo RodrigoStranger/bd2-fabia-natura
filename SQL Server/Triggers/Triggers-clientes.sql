@@ -2,7 +2,7 @@ USE FabiaNatura;
 GO
 
 -- Trigger para actualizar el estado del cliente a frecuente cuando tiene más de 10 facturas
-CREATE TRIGGER trg_ActualizarEstadoClienteFrecuente
+CREATE TRIGGER trg_ActualizarEstadoCliente
 ON Ventas.Facturas
 AFTER INSERT
 AS

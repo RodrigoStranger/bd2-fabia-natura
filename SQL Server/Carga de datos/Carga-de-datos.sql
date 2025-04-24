@@ -193,14 +193,3 @@ VALUES
 (5, '20517667502', 'Aceite relajante para masaje', 'Emotions relax', 'Aceite de masaje con extractos naturales que relajan los músculos y promueven un estado de bienestar.', 49.9, 59.9, 13, 'disponible'),
 (5, '20517667502', 'Gel exfoliante corporal', 'Calming vibes', 'Gel exfoliante con partículas naturales que remueven las células muertas mientras relajan los sentidos con su aroma suave.', 42.0, 50.4, 10, 'disponible'),
 (5, '20517667502', 'Spray aromático para almohadas y ambiente', 'Agú', 'Spray formulado con aceites esenciales que ayuda a crear un ambiente relajante, ideal para promover un descanso profundo.', 50.0, 60.0, 10, 'disponible');
-
--- Prueba de Facturas
-INSERT INTO Ventas.Facturas (dni, cod_vendedor, cod_asesor) 
-VALUES 
-('71827188', 1, NULL);  -- Se asume que '71827188' es el DNI de un cliente, 1 es el código de un vendedor, y cod_asesor es NULL
-
--- Prueba de Detalle de Facturas
-INSERT INTO Ventas.Detalle_Facturas (cod_factura, cod_producto, cantidad) 
-VALUES 
-(1, 1, 2),  -- Producto con cod_producto = 1, cantidad = 2
-(1, 2, 1);  -- Producto con cod_producto = 2, cantidad = 1

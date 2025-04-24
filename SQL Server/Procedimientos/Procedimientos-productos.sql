@@ -59,3 +59,19 @@ BEGIN
     DEALLOCATE producto_cursor;
 END;
 GO
+
+-- Mostrar la cantidad de ventas por producto
+CREATE PROCEDURE Ventas.ReporteTotalVentasPorProducto
+AS
+BEGIN
+    SELECT 
+        p.nombre AS Producto,
+        p.cod_producto AS ID_Producto,
+        -- Subconsulta que calcula el total de ventas por producto
+        (SELECT SUM(df.cantidad * p.precio_venta) 
+         FROM Ventas.Detalle_Facturas df
+         INNER JOIN Inventario.Productos p ON df.cod_producto = p.cod_producto
+         WHERE df.cod_producto = p.cod_producto) AS Total_Ventas
+    FROM Inventario.Productos p
+    ORDER BY Total_Ventas DESC;
+END;

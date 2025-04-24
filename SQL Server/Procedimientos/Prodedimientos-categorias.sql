@@ -2,7 +2,7 @@ USE FabiaNatura;
 GO
 
 -- Procedimiento almacenado que muestra reportes por categoria
-CREATE PROCEDURE Inventario.ReporteProductosPorCategoria
+CREATE PROCEDURE Inventario.ReporteProductosPorCategorias
 AS
 BEGIN
     DECLARE @categoria_nombre NVARCHAR(100);
@@ -59,3 +59,50 @@ BEGIN
     CLOSE categoria_cursor;
     DEALLOCATE categoria_cursor;
 END;
+GO
+
+-- Mostrar los productos por una categoria en especifico
+CREATE PROCEDURE Inventario.ReporteProductosPorCategoriaEspecifica
+    @cod_categoria INT = NULL
+AS
+BEGIN
+    -- Validar si se filtrará por categoría
+    IF @cod_categoria IS NOT NULL
+    BEGIN
+        IF NOT EXISTS (SELECT 1 FROM Inventario.Categorias WHERE cod_categoria = @cod_categoria)
+        BEGIN
+            RAISERROR('La categoría especificada no existe.', 16, 1);
+            RETURN;
+        END;
+    END;
+    
+    -- Consulta principal con SELECT anidado corregido
+    SELECT 
+        c.nombre AS Categoria,  -- Categoría ahora es la primera columna
+        p.cod_producto AS CodigoProducto,
+        p.nombre AS NombreProducto,
+        p.precio_venta AS PrecioVenta,
+        p.stock,
+        (
+            -- SELECT anidado para cantidad vendida (solo referencia a p.cod_producto)
+            SELECT ISNULL(SUM(df.cantidad), 0)
+            FROM Ventas.Detalle_Facturas df
+            WHERE df.cod_producto = p.cod_producto
+        ) AS Vendidos,
+        (
+            -- SELECT anidado para total generado
+            SELECT ISNULL(SUM(df.cantidad * dfp.precio_venta), 0)
+            FROM Ventas.Detalle_Facturas df
+            INNER JOIN Inventario.Productos dfp ON df.cod_producto = dfp.cod_producto
+            WHERE df.cod_producto = p.cod_producto
+        ) AS TotalGenerado
+    FROM 
+        Inventario.Productos p
+    INNER JOIN 
+        Inventario.Categorias c ON p.cod_categoria = c.cod_categoria
+    WHERE 
+        @cod_categoria IS NULL OR p.cod_categoria = @cod_categoria
+    ORDER BY 
+        Vendidos DESC;
+END;
+GO

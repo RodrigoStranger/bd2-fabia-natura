@@ -48,8 +48,7 @@ CREATE TABLE Ventas.Detalle_Facturas_Particionada (
 ) ON PS_Facturas_PorMes(fecha_registro);
 GO
 
--- Crear procedimiento para migrar datos a tablas particionadas
-CREATE PROCEDURE Ventas.MigrarDatosAParticion
+CREATE OR ALTER PROCEDURE Ventas.MigrarYLimpiarDatos
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -57,43 +56,61 @@ BEGIN
     BEGIN TRY
         BEGIN TRANSACTION;
         
-        -- Verificar que no existan datos en las tablas particionadas
-        IF EXISTS (SELECT 1 FROM Ventas.Facturas_Particionada) OR 
-           EXISTS (SELECT 1 FROM Ventas.Detalle_Facturas_Particionada)
+        -- 1. Verificar que hay datos para migrar
+        IF NOT EXISTS (SELECT 1 FROM Ventas.Facturas)
         BEGIN
-            RAISERROR('Las tablas particionadas ya contienen datos. Migración cancelada.', 16, 1);
+            RAISERROR('No hay datos para migrar en la tabla Facturas.', 16, 1);
             RETURN;
         END
         
-        -- Insertar datos en Facturas_Particionada
-        INSERT INTO Ventas.Facturas_Particionada (dni, cod_vendedor, cod_asesor, fecha_registro)
-        SELECT dni, cod_vendedor, cod_asesor, fecha_registro
-        FROM Ventas.Facturas
-        ORDER BY fecha_registro; -- Ordenar para optimizar la inserción en particiones
+        -- 2. Deshabilitar restricciones en tablas originales
+        PRINT 'Deshabilitando restricciones en tablas originales...';
+        ALTER TABLE Ventas.Detalle_Facturas NOCHECK CONSTRAINT ALL;
+        ALTER TABLE Ventas.Facturas NOCHECK CONSTRAINT ALL;
         
-        -- Insertar datos en Detalle_Facturas_Particionada
+        -- 3. Habilitar IDENTITY_INSERT para mantener los mismos códigos
+        SET IDENTITY_INSERT Ventas.Facturas_Particionada ON;
+        
+        -- 4. Insertar facturas manteniendo los mismos códigos
+        PRINT 'Migrando facturas...';
+        INSERT INTO Ventas.Facturas_Particionada (cod_factura, dni, cod_vendedor, cod_asesor, fecha_registro)
+        SELECT cod_factura, dni, cod_vendedor, cod_asesor, fecha_registro
+        FROM Ventas.Facturas
+        ORDER BY fecha_registro;
+        
+        SET IDENTITY_INSERT Ventas.Facturas_Particionada OFF;
+        
+        -- 5. Insertar detalles
+        PRINT 'Migrando detalles de facturas...';
         INSERT INTO Ventas.Detalle_Facturas_Particionada (cod_factura, cod_producto, cantidad, fecha_registro)
         SELECT 
-            fp.cod_factura, -- Usar el nuevo cod_factura de la tabla particionada
+            df.cod_factura, 
             df.cod_producto, 
             df.cantidad, 
-            fp.fecha_registro
+            f.fecha_registro
         FROM Ventas.Detalle_Facturas df
-        INNER JOIN Ventas.Facturas f ON df.cod_factura = f.cod_factura
-        INNER JOIN Ventas.Facturas_Particionada fp ON f.dni = fp.dni 
-            AND f.cod_vendedor = fp.cod_vendedor 
-            AND f.fecha_registro = fp.fecha_registro
-            AND ISNULL(f.cod_asesor, -1) = ISNULL(fp.cod_asesor, -1)
-        ORDER BY fp.fecha_registro;
+        INNER JOIN Ventas.Facturas f ON df.cod_factura = f.cod_factura;
+        
+        -- 6. Limpiar tablas originales
+        PRINT 'Limpiando tablas originales...';
+        DELETE FROM Ventas.Detalle_Facturas;
+        DELETE FROM Ventas.Facturas;
+        
+        -- 7. Volver a habilitar restricciones
+        PRINT 'Habilitando restricciones...';
+        ALTER TABLE Ventas.Facturas CHECK CONSTRAINT ALL;
+        ALTER TABLE Ventas.Detalle_Facturas CHECK CONSTRAINT ALL;
         
         COMMIT TRANSACTION;
-        PRINT 'Migración completada exitosamente.';
-        
+        PRINT 'Migración y limpieza completadas exitosamente.';
     END TRY
     BEGIN CATCH
-        ROLLBACK TRANSACTION;
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+            
+        PRINT 'Error durante la migración: ' + ERROR_MESSAGE();
         THROW;
-    END CATCH
+    END CATCH;
 END;
 GO
 

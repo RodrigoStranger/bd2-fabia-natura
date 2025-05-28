@@ -23,8 +23,17 @@ FROM Ventas.Facturas
 GROUP BY YEAR(fecha_registro), MONTH(fecha_registro)
 ORDER BY Año, Mes;
 
+-- Primero, eliminar los registros de la tabla de detalles
+--DELETE FROM Ventas.Detalle_Facturas_Particionada;
+
+-- Luego, eliminar los registros de la tabla principal
+--DELETE FROM Ventas.Facturas_Particionada;
+
+-- Para reiniciar los contadores de identidad
+--DBCC CHECKIDENT ('Ventas.Facturas_Particionada', RESEED, 0);
+
 -- PASO 3: Ejecutar migración a tablas particionadas
-PRINT '=== INICIANDO MIGRACIÓN Y ELIMINACION DE TABLAS ORIGINALES ===';
+PRINT '=== INICIANDO MIGRACIÓN A TABLAS PARTICIONADAS ===';
 EXEC Ventas.MigrarYLimpiarDatos;
 
 -- PASO 4: Verificar migración exitosa

@@ -219,36 +219,3 @@ BEGIN
     ORDER BY p.partition_number;
 END;
 GO
-
-CREATE OR ALTER PROCEDURE Ventas.MigrarYLimpiarDatos
-AS
-BEGIN
-    SET NOCOUNT ON;
-    
-    BEGIN TRY
-        BEGIN TRANSACTION;
-        
-        -- Primero migrar los datos
-        EXEC Ventas.MigrarDatosAParticion;
-        
-        -- Si llegamos aquí, la migración fue exitosa
-        -- Ahora limpiar las tablas originales
-        
-        -- Primero Detalle_Facturas por las restricciones de clave foránea
-        TRUNCATE TABLE Ventas.Detalle_Facturas;
-        
-        -- Luego Facturas
-        TRUNCATE TABLE Ventas.Facturas;
-        
-        COMMIT TRANSACTION;
-        PRINT 'Migración y limpieza completadas exitosamente.';
-    END TRY
-    BEGIN CATCH
-        IF @@TRANCOUNT > 0
-            ROLLBACK TRANSACTION;
-            
-        PRINT 'Error durante la migración: ' + ERROR_MESSAGE();
-        THROW;
-    END CATCH
-END;
-GO

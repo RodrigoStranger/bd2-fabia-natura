@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   sqlserver:
     build:
@@ -7,18 +9,19 @@ services:
     hostname: SqlServer-FabiaNatura
     environment:
       ACCEPT_EULA: "Y"
-      SA_PASSWORD: "Admin123!"
+      SA_PASSWORD: "Rodrigo2024"
       MSSQL_PID: "Express"
     ports:
       - "1433:1433"
     volumes:
       - sqlserver_data:/var/opt/mssql
       - C:/FabiaNaturaBD:/FabiaNaturaBD
+      - C:/BackupsFabiaNatura:/var/opt/mssql/backup
     networks:
       - sqlserver_network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "sqlcmd -S localhost -U sa -P Admin123! -Q 'SELECT 1' || exit 1"]
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P Rodrigo2024 -C -Q 'SELECT 1' || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5

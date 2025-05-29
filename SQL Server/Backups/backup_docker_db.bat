@@ -1,7 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
 
-:: Configuración de la base de datos
+:: Configuracion de la base de datos
 set "CONTAINER_NAME=SqlServer-FabiaNatura"
 set "DB_NAME=FabiaNatura"
 set "SA_PASSWORD=Rodrigo2024"
@@ -34,7 +34,7 @@ if not exist "%HOST_BACKUP_DIR%" (
 :: Verificar si el contenedor está ejecutándose
 docker ps --filter "name=%CONTAINER_NAME%" --format "{{.Names}}\t{{.Status}}" | findstr %CONTAINER_NAME% >nul
 if !ERRORLEVEL! NEQ 0 (
-    echo [ERROR] El contenedor %CONTAINER_NAME% no está en ejecución.
+    echo [ERROR] El contenedor %CONTAINER_NAME% no esta en ejecucion.
     echo Intente iniciar el contenedor con: docker-compose up -d
     set "EXIT_CODE=1"
     goto :final
@@ -70,7 +70,7 @@ if !ERRORLEVEL! NEQ 0 (
     echo [ERROR] No se pudo completar el respaldo.
     echo.
     echo [ERROR] Ocurrio un error durante el proceso de respaldo.
-    echo Verifique los mensajes de error y la conexión al contenedor.
+    echo Verifique los mensajes de error y la conexion al contenedor.
 ) else (
     echo.
     echo [EXITO] Respaldo completado correctamente.
@@ -85,7 +85,7 @@ if !ERRORLEVEL! NEQ 0 (
     echo.
     echo Verificando archivo de respaldo...
     for /f "tokens=*" %%i in ('docker exec %CONTAINER_NAME% ls -la %CONTAINER_FULL_PATH% 2^>^&1 ^| find "%BACKUP_FILE%"') do (
-        echo Tamaño: %%~i
+        echo Tamano: %%~i
     )
     echo ========================================
     

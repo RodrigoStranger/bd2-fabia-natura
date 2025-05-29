@@ -33,7 +33,7 @@ DECLARE @data_path NVARCHAR(256);
 SELECT @data_path = physical_name 
 FROM sys.master_files 
 WHERE database_id = 1 AND file_id = 1;
-SET @data_path = LEFT(@data_path, LEN(@data_path) - CHARINDEX('\', REVERSE(@data_path))) + '\FabiaNatura_';
+SET @data_path = LEFT(@data_path, LEN(@data_path) - CHARINDEX('/', REVERSE(@data_path))) + '/FabiaNatura_';
 
 -- Agregar archivo para metadatos
 IF NOT EXISTS (SELECT 1 FROM sys.database_files WHERE name = 'FabiaNatura_Auditoria_Metadatos')

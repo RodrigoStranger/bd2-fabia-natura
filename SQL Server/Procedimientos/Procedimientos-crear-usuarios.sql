@@ -1,20 +1,6 @@
 USE [FabiaNatura]
 GO
 
--- Crear roles si no existen
-IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = 'rol_asesor')
-BEGIN
-    CREATE ROLE rol_asesor;
-    PRINT 'Rol rol_asesor creado exitosamente.';
-END
-
-IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = 'rol_vendedor')
-BEGIN
-    CREATE ROLE rol_vendedor;
-    PRINT 'Rol rol_vendedor creado exitosamente.';
-END
-GO
-
 -- Procedimiento para asignar rol de vendedor a un empleado existente
 CREATE OR ALTER PROCEDURE [RecursosHumanos].[sp_AsignarVendedor]
     @cod_empleado INT,

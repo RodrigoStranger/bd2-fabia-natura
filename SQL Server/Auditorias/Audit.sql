@@ -12,10 +12,10 @@ GO
 -- Crear la especificación de auditoría a nivel de base de datos
 CREATE DATABASE AUDIT SPECIFICATION AuditoriaFBJPerez
 FOR SERVER AUDIT AuditoriaServidor
-ADD (SELECT, INSERT, UPDATE ON OBJECT::[Ventas].[Facturas] BY jpérez),
-ADD (SELECT, INSERT, UPDATE ON OBJECT::[Ventas].[Detalle_Facturas] BY jpérez),
-ADD (SELECT, INSERT, UPDATE ON OBJECT::[RecursosHumanos].[Clientes] BY jpérez),
-ADD (SELECT, INSERT, UPDATE ON OBJECT::[Inventario].[Productos] BY jpérez),
-ADD (SELECT, INSERT, UPDATE ON OBJECT::[Inventario].[Categorias] BY jpérez);
+ADD (SELECT, INSERT, UPDATE ON OBJECT::[Ventas].[Facturas] BY JPérez),
+ADD (SELECT, INSERT, UPDATE ON OBJECT::[Ventas].[Detalle_Facturas] BY JPérez),
+ADD (SELECT, INSERT, UPDATE ON OBJECT::[RecursosHumanos].[Clientes] BY JPérez),
+ADD (SELECT, INSERT, UPDATE ON OBJECT::[Inventario].[Productos] BY JPérez),
+ADD (SELECT, INSERT, UPDATE ON OBJECT::[Inventario].[Categorias] BY JPérez);
 GO
 ALTER DATABASE AUDIT SPECIFICATION AuditoriaFBJPerez WITH (STATE = ON);

@@ -27,3 +27,7 @@ GRANT SELECT ON [Inventario].[Categorias] TO rol_vendedor;
 GRANT SELECT ON [RecursosHumanos].[Clientes] TO rol_asesor;
 GRANT SELECT ON [Inventario].[Productos] TO rol_asesor;
 GRANT SELECT ON [Inventario].[Categorias] TO rol_asesor;
+
+CREATE LOGIN usuario01 WITH PASSWORD = 'admin';
+CREATE USER usuario01 FOR LOGIN usuario01;
+ALTER ROLE rol_asesor ADD MEMBER usuario01;
